@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
                 if (isLandScape)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: [
                       Text("Show Chart"),
                       Obx(
                         () => Switch(
@@ -88,7 +88,7 @@ class HomePage extends StatelessWidget {
                   ),
                 if (!isLandScape) txListWidget,
                 if (isLandScape)
-                  c.showChart.value
+                  Obx(() => c.showChart.value
                       ? Container(
                           height: (MediaQuery.of(context).size.height -
                                   appBar.preferredSize.height -
@@ -96,7 +96,7 @@ class HomePage extends StatelessWidget {
                               0.7,
                           child: Chart(),
                         )
-                      : txListWidget
+                      : txListWidget),
               ],
             ),
           ),
