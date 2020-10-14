@@ -12,19 +12,22 @@ class Chart extends StatelessWidget {
       margin: EdgeInsets.all(20),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: c.groupedTransactionValues.map((data) {
-            return Flexible(
-              fit: FlexFit.tight,
-              child: ChartBar(
+        child: Obx(
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: c.groupedTransactionValues.map((data) {
+              return Flexible(
+                fit: FlexFit.tight,
+                child: ChartBar(
                   data['day'],
                   data['amount'],
                   c.totalSpending == 0.0
                       ? 0.0
-                      : (data['amount'] as double) / c.totalSpending),
-            );
-          }).toList(),
+                      : (data['amount'] as double) / c.totalSpending,
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );

@@ -5,7 +5,7 @@ import './widgets/transactions_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
 
-import 'controller/transactions_controller.dart';
+import './controller/transactions_controller.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +13,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       home: HomePage(),
       title: "Daily Expenses",
       theme: ThemeData(
@@ -27,15 +27,15 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   final c = Get.put(TransactionsController());
   void startAddNewTransation(ctx) {
-    // Get.bottomSheet(
-    //   NewTransaction(),
-    //   backgroundColor: Colors.white,
-    // );
-    showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return NewTransaction();
-        });
+    Get.bottomSheet(
+      NewTransaction(),
+      backgroundColor: Colors.white,
+    );
+    // showModalBottomSheet(
+    //     context: ctx,
+    //     builder: (_) {
+    //       return NewTransaction();
+    //     });
   }
 
   @override
@@ -68,11 +68,13 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text("Show Chart"),
-                      Switch(
-                        value: c.showChart.value,
-                        onChanged: (val) {
-                          c.showChart.value = val;
-                        },
+                      Obx(
+                        () => Switch(
+                          value: c.showChart.value,
+                          onChanged: (val) {
+                            c.showChart.value = val;
+                          },
+                        ),
                       ),
                     ],
                   ),
