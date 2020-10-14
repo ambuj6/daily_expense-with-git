@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import './widgets/transactions_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
-import './models/transaction.dart';
+
 import 'controller/transactions_controller.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: HomePage(),
-        title: "Daily Expenses",
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.amber,
-        ));
+      home: HomePage(),
+      title: "Daily Expenses",
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+      ),
+    );
   }
 }
 
 class HomePage extends StatelessWidget {
-  final TransactionsController c = Get.put(TransactionsController());
-
-  bool showChart = false;
-  void startAddNewTransation(BuildContext ctx) {
+  final c = Get.put(TransactionsController());
+  void startAddNewTransation(ctx) {
+    // Get.bottomSheet(
+    //   NewTransaction(),
+    //   backgroundColor: Colors.white,
+    // );
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
-          return NewTransaction(c.addTransaction);
+          return NewTransaction();
         });
   }
 
@@ -45,18 +44,16 @@ class HomePage extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(title: Text("Daily Expenses"), actions: [
       IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () {
-          startAddNewTransation(context);
-        },
-      ),
+          icon: Icon(Icons.add),
+          onPressed: () => startAddNewTransation(context)),
     ]);
     final txListWidget = Container(
-        height: (MediaQuery.of(context).size.height -
-                appBar.preferredSize.height -
-                MediaQuery.of(context).padding.top) *
-            0.75,
-        child: TransactionList(c.userTransactions, c.deleteTransaction));
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.75,
+      child: TransactionList(c.userTransactions),
+    );
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: appBar,
@@ -72,9 +69,9 @@ class HomePage extends StatelessWidget {
                     children: <Widget>[
                       Text("Show Chart"),
                       Switch(
-                        value: showChart,
+                        value: c.showChart.value,
                         onChanged: (val) {
-                          showChart = val;
+                          c.showChart.value = val;
                         },
                       ),
                     ],
@@ -85,17 +82,18 @@ class HomePage extends StatelessWidget {
                             appBar.preferredSize.height -
                             MediaQuery.of(context).padding.top) *
                         0.25,
-                    child: Chart(c.recentTransactions),
+                    child: Chart(),
                   ),
                 if (!isLandScape) txListWidget,
                 if (isLandScape)
-                  showChart
+                  c.showChart.value
                       ? Container(
                           height: (MediaQuery.of(context).size.height -
                                   appBar.preferredSize.height -
                                   MediaQuery.of(context).padding.top) *
                               0.7,
-                          child: Chart(c.recentTransactions))
+                          child: Chart(),
+                        )
                       : txListWidget
               ],
             ),
@@ -104,9 +102,7 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          startAddNewTransation(context);
-        },
+        onPressed: () => startAddNewTransation(context),
       ),
     );
   }

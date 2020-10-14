@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
-import '../models/transaction.dart';
+import 'package:get/get.dart';
+import 'package:personal_expenses/models/transaction.dart';
+import './../controller/transactions_controller.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-  List<Transactions> transaction;
-  final Function deleteTransaction;
-  TransactionList(this.transaction, this.deleteTransaction);
+  final List<Transactions> userTransactions;
+  TransactionList(this.userTransactions);
+  final c = Get.find<TransactionsController>();
 
   Widget build(BuildContext context) {
-    return transaction.isEmpty
-        ? Column(children: [
-            Text("No transaction added yet"),
-            SizedBox(
-              height: 30,
-            ),
-            Container(
-              child: Expanded(
-                child: Image.asset(
-                  'images/waterfall.jpg',
-                  fit: BoxFit.cover,
+    return userTransactions.isEmpty
+        ? Column(
+            children: [
+              Text("No transaction added yet"),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                child: Expanded(
+                  child: Image.asset(
+                    'images/waterfall.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-          ])
+            ],
+          )
         : ListView.builder(
             itemBuilder: (ctx, index) {
               return Card(
@@ -35,21 +39,23 @@ class TransactionList extends StatelessWidget {
                   leading: CircleAvatar(
                     radius: 30,
                     child: FittedBox(
-                        child: Padding(
-                            padding: EdgeInsets.all(6),
-                            child: Text('\$${transaction[index].amount}'))),
+                      child: Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text('\$${userTransactions[index].amount}'),
+                      ),
+                    ),
                   ),
                   title: Text(
-                    transaction[index].title,
+                    userTransactions[index].title,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    DateFormat.yMMMd().format(transaction[index].date),
+                    DateFormat.yMMMd().format(userTransactions[index].date),
                   ),
                   trailing: MediaQuery.of(context).size.width >= 400
                       ? FlatButton.icon(
                           onPressed: () =>
-                              deleteTransaction(transaction[index].id),
+                              c.deleteTransaction(userTransactions[index].id),
                           icon: Icon(Icons.delete),
                           label: Text("Delete"),
                         )
@@ -57,12 +63,12 @@ class TransactionList extends StatelessWidget {
                           icon: Icon(Icons.delete),
                           color: Theme.of(context).errorColor,
                           onPressed: () =>
-                              deleteTransaction(transaction[index].id),
+                              c.deleteTransaction(userTransactions[index].id),
                         ),
                 ),
               );
             },
-            itemCount: transaction.length,
+            itemCount: userTransactions.length,
           );
   }
 }

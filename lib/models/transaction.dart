@@ -5,6 +5,7 @@ class Transactions {
   final String title;
   final double amount;
   final DateTime date;
+
   Transactions({
     @required this.id,
     @required this.title,
